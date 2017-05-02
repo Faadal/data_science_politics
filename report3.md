@@ -1,57 +1,40 @@
 # Does being married have an effect on your political views?
 #### Apurva Raman and William Lu
 
-Politics has often been a polarizing subject amongst Americans, and in today's [increasingly partisan](https://www.nytimes.com/2014/06/16/opinion/charles-blow-politics-grow-more-partisan-than-ever.html) political environment, that has not changed. Using data from the [General Social Survey (GSS)](https://gssdataexplorer.norc.org/), an annual study designed and conducted by the [National Opinion Research Center (NORC)](http://www.norc.org/Pages/default.aspx) at the University of Chicago, we identify variables that are correlated with a person's political views. We use a subset of data from the GSS from 1987 to 2016 and find that marital status has a suprising apparent effect on a person's political views, but after further analysis, determine that many confounding variables need to be controlled for to determine the apparent statistical effect that marital status has on political views.
+Politics has often been a polarizing subject amongst Americans, and in today's [increasingly partisan](https://www.nytimes.com/2014/06/16/opinion/charles-blow-politics-grow-more-partisan-than-ever.html) political environment, that has not changed. Using data from the [General Social Survey (GSS)](https://gssdataexplorer.norc.org/), an annual study designed and conducted by the [National Opinion Research Center (NORC)](http://www.norc.org/Pages/default.aspx) at the University of Chicago, we identify variables that are correlated with a person's political views. We find that while marital status has a statistically significant apparent effect on political views, that apparent effect is drastically reduced when including confounding variables, particularly religion.
 
+### Defining the Problem
 
+We're not the only ones looking at this: [Gallup](http://www.gallup.com/poll/121571/marriage-remains-key-predictor-party-identification.aspx) investigated this in 2009 and found that "married Americans tilt Republican; unmarried Americans, Democratic." To further investigate the apparent effect and check whether that holds over a longer period of time, we use a subset of GSS data from 1987 to 2016 and find that while marital status appears related to a person's political views, further analysis shows that many confounding variables need to be controlled for.
 
-[Gallup](http://www.gallup.com/poll/121571/marriage-remains-key-predictor-party-identification.aspx)
+Other than time span and dataset, our analysis differs from Gallup's in the way that we look at political views. Gallup only has three options: Republican, Democrat, and Independent. The GSS allows us to have a more granular view of people's political views: a Likert scale from 1-7, with 1 being extremely liberal and 7 being extremely conservative. This does not tie respondents down to a specific political party, and we think it more accurately represents people's real political views.
 
+### Married Americans Tilt Conservative; Unmarried Americans Tilt Liberal
 
+![marriage_punchline](https://github.com/williamalu/data_science_politics/blob/master/Plots/marriage_punchline.png)
 
+Breaking down the GSS data and sorting people by marital status allows us to see what proportion of respondents, given their marital status, fall into each political viewpoint. While many respondents considered themselves political moderates, a trend is still visible. Married and widowed respondents skewed more conservative while respondents who have never been married or are separated skewed more liberal. Divorced respondents were somewhere in between. However, many other factors, such as age, sex, and religion may be influencing the trend that we see.
 
+### Marital Status Correlation Significantly Impacted by Religion
 
+To analyze the apparent effect of marital status on a respondent's political views, we treat the Likert scale as a linearly increasing scale and utilize linear regressions to find correlations between marital status and political views while controlling for confounding variables. This means that we make the assumption that responses on the political views scale are equally spaced, which is not necessarily true. However, modelling the Likert scale as linear does not significantly impact our analysis because we are interested in the relationship between marital status and political views and not necessarily trying to predict a person's political views given their marital status.
 
-##### This. Is Garbage. <insert HTTYD music here>
-At first glance, our multinomial regression shows that marital status is correlated with political views. With low p-values for all categories of political views, except for moderates, this effect is statistically significant and merits further exploration.
+In addition, we do not try to analyze absolute apparent effect size using the coefficient that a linear regression returns. Our linearization of the Likert scale is not accurate and interpreting a discrete variable as a continuous one is not useful.
 
-To determine whether or not the correlation is spurious, we identified some control variables (i.e. age and sex) that could affect marital status and political views. We then ran some multinomial regressions with these control variables, and calculated their impact on the apparent effect of marital status.
+We begin by finding that marital status has a statistically signficant correlation with political views (p-value < 0.001). Then, we add in some standard control variables: age, sex, race, education (highest degree obtained), class (calculated social economic index), and household income. All of the standard control variables we used had a statistically significant correlation, except for class (calculated social economic index). This reduces the apparent effect of marital status on political views by 24.7%. However, when you add religion to the mix, the apparent effect of marital status on political views is further reduced by another 15.2%, which means only 60.1% of the original apparent effect of marital status remains.
 
-###### Table 1: Change in apparent effect of marital status when controlling for age
-|     Political View     | Change in Apparent Effect |
-|:----------------------:|:-------------------------:|
-| Extremely Liberal      | 0.036360                  |
-| Liberal                | -0.083607                 |
-| Slightly Liberal       | -0.399400                 |
-| Moderate               | -0.428118                 |
-| Slightly Conservative  | 0.001829                  |
-| Conservative           | -0.230129                 |
-| Extremely Conservative | -0.578633                 |
+### Marital Status Correlation Not Impacted by Income
 
-###### Table 2: Change in apparent effect of marital status when controlling for sex
-|     Political View     | Change in Apparent Effect |
-|:----------------------:|:-------------------------:|
-| Extremely Liberal      | -0.006281                 |
-| Liberal                | -0.003963                 |
-| Slightly Liberal       | -0.016306                 |
-| Moderate               | -0.173345                 |
-| Slightly Conservative  | 0.017816                  |
-| Conservative           | 0.000432                  |
-| Extremely Conservative | -0.008266                 |
+Surprisingly, income has a very small effect on political views when used as a control for marital status. The effect size relative to marital status is many orders of magnitude smaller, while still remaining statistically significant (p-value < 0.001).
 
-###### Table 3: Change in apparent effect of marital status when controlling for age and sex
-|     Political View     | Change in Apparent Effect |
-|:----------------------:|:-------------------------:|
-| Extremely Liberal      | 0.029851                  |
-| Liberal                | -0.087238                 |
-| Slightly Liberal       | -0.409193                 |
-| Moderate               | -0.527251                 |
-| Slightly Conservative  | 0.019678                  |
-| Conservative           | -0.229796                 |
-| Extremely Conservative | -0.582116                 |
+![income_cdf](https://github.com/williamalu/data_science_politics/blob/master/Plots/cdf_income.png)
 
-Looking at the changes in apparent effect when controlling for age and sex separately, we find that age alone explains very little of the apparent effect of marital status for people who are extremely liberal, liberal, or slightly conservative. Sex alone explains very little of the apparent effect of marital status for people who are not moderate. Combined, however, age and sex explain a good proportion of the apparent effect of marital status for people who are slightly liberal, moderate, conservative, and extremely conservative. However, they do not explain all of the apparent effect of marital status.
+Graphing the CDF of income shows us that it is a long-tailed distribution, as expected, and this is also reflected in our graph of income broken down by political views.
 
-Looking at the p-values for the regression when we control for age and sex, the effect of marital status is on the border of statistical significance for people who are slightly liberal or moderate. This means that about 59% of the apparent effect of marital status on people's political views being slightly liberal is still explained by marital status. About 47% of the apparent effect of marital status on people's political views being moderate is still explained by marital status.
+![income_hexbin](https://github.com/williamalu/data_science_politics/blob/master/Plots/income_hexbin.png)
 
-While this seems promising, marital status is a variable that is confounded by many other factors in people's lives, such as race and level of education. It is entirely possible for the remainder of the apparent effect of marital status on political views to be explained by more control variables.
+There is a long tail on the right of the income spectrum, which mirrors what we saw in the CDF. The data, as shown here, is jittered to better show density of incomes and political views. We see that most people have household incomes around the $25,000-50,000 range and that, consistent with our findings earlier, the vast majority of respondents consider themselves moderates. This is why income has such a small effect size relative to marital status: across the political spectrum, most people make an "average" amount of income.
+
+### Does being married have an effect on your political views?
+
+Yes, but after controlling for confounding variables, the apparent effect of marital status significantly decreases. Of the control variables we used, religion decreased the apparent effect of marital status the most while income decreased it the least.
