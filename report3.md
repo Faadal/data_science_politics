@@ -38,3 +38,5 @@ There is a long tail on the right of the income spectrum, which mirrors what we 
 ### Does being married have an effect on your political views?
 
 Yes, but after controlling for confounding variables, the apparent effect of marital status significantly decreases. Of the control variables we used, religion decreased the apparent effect of marital status the most while income decreased it the least.
+
+Further details of this analysis are in this [Jupyter notebook](https://github.com/williamalu/data_science_politics/blob/master/report3.ipynb).
